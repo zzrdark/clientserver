@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+	<property name="log.base" value="D:/clientServer/2283" />
+	<property name="log.proj" value="clientserver" />
+	<property name="logPattern"
+		value="%date|%thread|%X{uid}|%X{url}|%level{8}|%logger{60}:%line|%msg %ex ------%n"></property>
+
+	<appender name="stdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+		<!--<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>-->
+	</appender>
+
+	<!-- error log -->
+	<appender name="errorAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}/${log.proj}-error_%d{yyyy-MM-dd}-%i.log
+			</FileNamePattern>
+			<maxHistory>30</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>200MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="asyncErrorAppender" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>1024</queueSize>
+		<appender-ref ref="errorAppender" />
+	</appender>
+
+	<!-- common log -->
+	<appender name="commonAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}/${log.proj}_%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+			<maxHistory>30</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>200MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="asyncCommonAppender" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>1024</queueSize>
+		<appender-ref ref="commonAppender" />
+	</appender>
+
+	<logger name="com.zkja.clientserver">
+		<level value="info" />
+	</logger>
+
+	<logger name="com.baidu.disconf.client">
+		<level value="warn" />
+	</logger>
+
+	<logger name="org.apache.zookeeper">
+		<level value="error" />
+	</logger>
+	<logger name="com.github.ltsopensource">
+		<level value="error" />
+	</logger>
+	<logger name="org.I0Itec.zkclient">
+		<level value="error" />
+	</logger>
+
+	<root>
+		<level value="info" />
+		<level value="error" />
+		<appender-ref ref="stdoutAppender" />
+		<appender-ref ref="asyncCommonAppender" />
+
+		<appender-ref ref="asyncErrorAppender" />
+	</root>
+</configuration>

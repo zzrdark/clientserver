@@ -1,0 +1,9 @@
+减少GC线程
+-XX:ParallelGCThreads=2
+
+-Xms500m -Xmx500m
+
+
+java -Xms500m -Xmx500m -jar clientserver-0.0.1-SNAPSHOT.jar
+
+java -Xms50m -Xmx50m -jar clientserver-0.0.1-SNAPSHOT.jar
